@@ -48,9 +48,61 @@ void printList(node *head)
  return ;
 }
 
-void swamp(node **head,int a,int b)
+int find_pos(node *head,int num, node **loc)
 {
+ int pos=0;
+ if(head==NULL)
+ {
+  return -1;
+ }
+ while(head!=NULL && head->num!=num)
+ {
+  pos+=1;
+  *loc=head;
+  head=head->next;
+ }
+ if(head==NULL)
+ {
+  return -1;
+ }
+ return pos;
+}
+
+void swap(node **head,int a,int b)
+{
+ int pos_a,pos_b;
+ if (a==b)
+  return;
  
+ node *p_x=NULL,*c_x=*head,*p_y=NULL,*c_y=*head;
+ while(c_x!=NULL && c_x->num!=a)
+ {
+  p_x=c_x;
+  c_x=c_x->next;
+ }
+ while(c_y!=NULL && c_y->num!=b)
+ {
+  p_y=c_y;
+  c_y=c_y->next;
+ }
+
+ if(c_x == NULL || c_y==NULL) //element not found
+  return ;
+
+ if(p_x==NULL) //if pos_a = 0
+  *head=c_y;
+ else
+  p_x->next=c_y;
+
+ if(p_y==NULL)
+  *head=c_x;
+ else
+  p_y->next=c_x;
+
+ node *temp=c_x->next;
+ c_x->next=c_y->next;
+ c_y->next=temp;
+ return;
 }
 
 int main()
@@ -64,5 +116,6 @@ int main()
  printf("\nEnter Elements to be swapped: ");
  scanf("%d%d",&num1,&num2);
  swap(&start,num1,num2);
+ printList(start);
  return 0;
 }
