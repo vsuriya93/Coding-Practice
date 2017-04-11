@@ -50,11 +50,11 @@ void printList(node *head)
  return ; 
 }
 
-node * reverseList(node *head)
+void reverseList(node **head)
 {
- if(head==NULL || head->next==NULL)
-	return head;
- node *prev=NULL,*curr=head,*nxt=curr;
+ if(*head==NULL || (*head)->next==NULL)
+	return ;
+ node *prev=NULL,*curr=*head,*nxt;
  while(curr!=NULL)
  {
   nxt=curr->next;
@@ -62,11 +62,52 @@ node * reverseList(node *head)
   prev=curr;
   curr=nxt;
  }
- return prev;
+ *head=prev;
 }
 
-int checkPalindrome(node *a)
+int compare(node *a,node *b)
 {
+ node *t1=a,*t2=b;
+ while(t1 && t2)
+ {
+  if(t1->num!=t2->num)
+   return 0;
+  t1=t1->next;
+  t2=t2->next;
+ }
+ return 1;
+}
+
+int checkPalindrome(node *head)
+{
+ if(head==NULL | head->next==NULL)
+ 	return 0;
+ node *fast=head,*slow=head,*prev=head,*mid=NULL;
+ while(fast!=NULL && fast->next!=NULL)
+ {
+  prev=slow;
+  slow=slow->next;
+  fast=fast->next->next;
+ }
+ 
+ if(fast!=NULL) //saving mid val for odd len list
+ {
+  mid=slow;
+  slow=slow->next;
+ }
+ node *second_list=slow;
+ prev->next=NULL;
+ reverseList(&second_list);
+ int result=compare(head,second_list);
+ reverseList(&second_list);
+ if(mid!=NULL)
+ {
+  prev->next=mid;
+  mid->next=second_list;
+ }
+ else
+  prev->next=second_list;
+ return result;
 }
 
 int main()
@@ -76,10 +117,12 @@ int main()
  insertEnd(&start,5);
  insertEnd(&start,11);
  insertEnd(&start,12);
- insertEnd(&start,13);
- insertEnd(&start,14);
+ insertEnd(&start,12);
+ insertEnd(&start,11);
+ insertEnd(&start,5);
  printList(start);
  printf("\n");
  printf("\n%d\n",checkPalindrome(start));
+ printList(start);
  return 0;
 }
